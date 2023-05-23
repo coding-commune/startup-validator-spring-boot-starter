@@ -10,7 +10,7 @@ start.
 
 ## Getting Started
 
-The library is pending to be published on Maven Central. See progress on [Jira issue](TODO).
+The library is pending to be published on Maven Central. See progress on [Jira issue](https://issues.sonatype.org/browse/OSSRH-91884).
 As of now, you can also download the source code and build it locally.
 
 To use Spring Boot Startup Validator you have to add the following dependency to your pom:
