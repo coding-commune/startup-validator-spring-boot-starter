@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationFailedEvent;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationEvent;
@@ -38,7 +39,7 @@ public class StartupValidatorInitializer implements ApplicationContextInitialize
         @Override
         public boolean supportsEventType(Class<? extends ApplicationEvent> eventType) {
             return ApplicationStartedEvent.class.isAssignableFrom(eventType) ||
-                    ContextRefreshedEvent.class.isAssignableFrom(eventType) ||
+                    ApplicationReadyEvent.class.isAssignableFrom(eventType) ||
                     ApplicationFailedEvent.class.isAssignableFrom(eventType);
         }
 
@@ -49,11 +50,11 @@ public class StartupValidatorInitializer implements ApplicationContextInitialize
                     performApplicationStartedValidation();
                 }
             }
-//            if (event instanceof ContextRefreshedEvent contextRefreshedEvent) {
-//                if (contextRefreshedEvent.getApplicationContext().equals(this.context)) {
-//
-//                }
-//            }
+            if (event instanceof ApplicationReadyEvent applicationReadyEvent) {
+                if (applicationReadyEvent.getApplicationContext().equals(this.context)) {
+                    this.context.removeApplicationListener(this);
+                }
+            }
             else if (event instanceof ApplicationFailedEvent applicationFailedEvent
                     && applicationFailedEvent.getApplicationContext().equals(this.context)) {
                 performApplicationFailedValidation();
