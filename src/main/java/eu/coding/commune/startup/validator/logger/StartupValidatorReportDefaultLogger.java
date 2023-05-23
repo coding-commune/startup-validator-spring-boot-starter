@@ -86,7 +86,9 @@ public class StartupValidatorReportDefaultLogger implements StartupValidatorRepo
     }
 
     private static String getApplicationVersion() {
-        return getVersionFromPath();
+        return "1.0.0";
+        //TODO - fix getting version from Path
+//        return getVersionFromPath();
     }
 
     private static String getVersionFromPath() {

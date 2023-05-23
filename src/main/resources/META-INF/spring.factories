@@ -1,0 +1,2 @@
+org.springframework.context.ApplicationContextInitializer=\
+  eu.coding.commune.startup.validator.StartupValidatorInitializer
