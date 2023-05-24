@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.coding-commune</groupId>
   <artifactId>startup-validator-spring-boot-starter</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3-SNAPSHOT</version>
   <name>Spring Boot Startup Validator</name>
   <description>Library allowing to validate an app, its configuration, and runtime environment at startup</description>
   <url>http://maven.apache.org</url>
@@ -34,7 +34,7 @@
   <scm>
     <connection>scm:git:git://github.com/coding-commune/startup-validator-spring-boot-starter.git</connection>
     <url>https://github.com/coding-commune/startup-validator-spring-boot-starter</url>
-    <tag>startup-validator-spring-boot-starter-1.0.2</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
