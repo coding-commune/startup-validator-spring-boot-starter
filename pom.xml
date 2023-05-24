@@ -34,8 +34,8 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git://github.com/coding-commune/startup-validartor-spring-boot-starter.git</connection>
-    <url>https://github.com/coding-commune/startup-validartor-spring-boot-starter</url>
+    <connection>scm:git:git://github.com/coding-commune/startup-validator-spring-boot-starter.git</connection>
+    <url>https://github.com/coding-commune/startup-validator-spring-boot-starter</url>
   </scm>
 
   <distributionManagement>
