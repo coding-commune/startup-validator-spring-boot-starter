@@ -1,6 +1,6 @@
 # Spring Boot Startup Validator
 
-[![License](https://img.shields.io/github/license/coding-commune/startup-validartor-spring-boot-starter)](https://opensource.org/license/mit/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Main Purpose
 
