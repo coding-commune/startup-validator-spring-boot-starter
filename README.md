@@ -48,7 +48,7 @@ the field matches passed regex. Supports following arguments:
 - message
 - secret
 
-### `@MustSucced`
+### `@MustSucceed`
 the method runs without throwing any exception. Supports following arguments:
 - otherwise
 - message
@@ -94,7 +94,7 @@ An enum type that allows you to choose what happens if the validation fails. As 
 - A startup validator also checks for **implicitly required fields** e.g. simple int type without which Spring Boot app
 wouldn't start
 - If there is a problem with any implicitly required fields or an app can't start because of some other reason then
-`@MustSucced` and `@MustReturn` validations won't fire (they need working Spring context)
+`@MustSucceed` and `@MustReturn` validations won't fire (they need working Spring context)
 - Annotations can be used only on Spring managed beans. Otherwise, they won't work.
 - You can autowire properties both with `@ConfigurationProperties` and `@Value`
 
