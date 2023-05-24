@@ -15,7 +15,7 @@ To use Spring Boot Startup Validator you have to add the following dependency to
 <dependency>
   <groupId>eu.coding-commune</groupId>
   <artifactId>startup-validator-spring-boot-starter</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
