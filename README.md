@@ -15,7 +15,7 @@ To use Spring Boot Startup Validator you have to add the following dependency to
 <dependency>
   <groupId>eu.coding-commune</groupId>
   <artifactId>startup-validator-spring-boot-starter</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.4</version>
 </dependency>
 ```
 
@@ -110,7 +110,7 @@ public class ConfigurationPropertiesTest {
   private String name;
 
   @MustMatch(
-          regex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\\\.[A-Za-z0-9-]+)*(\\\\.[A-Za-z]{2,})$",
+          regex = "^(.+)@(\\S+)$",
           message = "Provided email is not valid!")
   private String email;
 
@@ -187,13 +187,13 @@ public class SpringManagedService {
    |    /|  __||  __/| | | |    /  | |  
    | |\ \| |___| |   \ \_/ / |\ \  | |  
    \_| \_\____/\_|    \___/\_| \_| \_/  
-Version: 1.0.0
+Version: 1.0.4
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 . . . . . . . . . . . . . . . . . . . . . . . 
 SEVERITY LEVEL: ERROR. Found 2 problems.
 . . . . . . . . . . . . . . . . . . . . . . . 
 [ERROR] | Name must be defined! | Mandatory property not configured: eu.coding-commune.startup-validator.test.name
-[ERROR] | Provided email is not valid! | Regex ^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$ was not matched for test@test provided for property eu.coding-commune.startup-validator.test.email
+[ERROR] | Provided email is not valid! | Regex ^(.+)@(\\S+)$ was not matched for test@test provided for property eu.coding-commune.startup-validator.test.email
 . . . . . . . . . . . . . . . . . . . . . . . 
 SEVERITY LEVEL: PROBABLE_ERROR. Found 1 problems.
 . . . . . . . . . . . . . . . . . . . . . . . 
