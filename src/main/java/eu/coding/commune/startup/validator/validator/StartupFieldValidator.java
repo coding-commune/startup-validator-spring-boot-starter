@@ -2,6 +2,7 @@ package eu.coding.commune.startup.validator.validator;
 
 import eu.coding.commune.startup.validator.MustBeDefined;
 import eu.coding.commune.startup.validator.MustMatch;
+import eu.coding.commune.startup.validator.MustNotBeEmpty;
 import eu.coding.commune.startup.validator.model.SeverityLevel;
 import eu.coding.commune.startup.validator.model.StartupValidatorReport;
 import eu.coding.commune.startup.validator.model.field.*;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
 
 import static eu.coding.commune.startup.validator.validator.ValidatorUtils.*;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
 public class StartupFieldValidator {
@@ -81,49 +83,51 @@ public class StartupFieldValidator {
     }
 
     private Optional<StartupValidatorReportFieldEntry> checkResolvability(FieldData fieldData) {
-        if (!isFieldResolvable(fieldData.field(), fieldData.resolvedValue())) {
-            return Optional.of(StartupValidatorReportFieldUnresolvableEntry.builder()
+        if (isFieldResolvable(fieldData.field(), fieldData.resolvedValue())) {
+            return Optional.empty();
+        }
+        return Optional.of(StartupValidatorReportFieldUnresolvableEntry.builder()
                 .severityLevel(SeverityLevel.PROBABLE_ERROR)
                 .message("")
                 .type(fieldData.field().getType().getTypeName())
                 .property(fieldData.propertyName())
                 .resolvedValue(fieldData.resolvedValue())
                 .build());
-        }
-        return Optional.empty();
     }
 
     private Optional<StartupValidatorReportFieldEntry> checkMustBeDefined(FieldData fieldData) {
-        if (fieldData.field().isAnnotationPresent(MustBeDefined.class)) {
-            if (isNull(fieldData.resolvedValue()) || fieldData.resolvedValue().isBlank()) {
-                MustBeDefined annotation = fieldData.field().getAnnotation(MustBeDefined.class);
-                return Optional.of(StartupValidatorReportMustBeDefinedEntry.builder()
-                    .severityLevel(annotation.otherwise().getSeverityLevel())
-                    .message(annotation.message())
-                    .property(fieldData.propertyName())
-                    .resolvedValue(fieldData.resolvedValue())
-                    .build());
-            }
+        if (!fieldData.field().isAnnotationPresent(MustBeDefined.class)) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        if (nonNull(fieldData.resolvedValue()) && !fieldData.resolvedValue().isBlank()) {
+            return Optional.empty();
+        }
+        MustBeDefined annotation = fieldData.field().getAnnotation(MustBeDefined.class);
+        return Optional.of(StartupValidatorReportMustBeDefinedEntry.builder()
+                .severityLevel(annotation.otherwise().getSeverityLevel())
+                .message(annotation.message())
+                .property(fieldData.propertyName())
+                .resolvedValue(fieldData.resolvedValue())
+                .build());
     }
 
     private Optional<StartupValidatorReportFieldEntry> checkMustMatch(FieldData fieldData) {
         if (fieldData.field().isAnnotationPresent(MustMatch.class)) {
-            //TODO validate pattern provided by user!
-            MustMatch annotation = fieldData.field().getAnnotation(MustMatch.class);
-            Pattern pattern = Pattern.compile(annotation.regex());
-            if (!pattern.matcher(fieldData.resolvedValue()).matches()) {
-                return Optional.of(StartupValidatorReportMustMatchEntry.builder()
-                    .severityLevel(annotation.otherwise().getSeverityLevel())
-                    .message(annotation.message())
-                    .property(fieldData.propertyName())
-                    .regex(annotation.regex())
-                    .resolvedValue(fieldData.resolvedValue())
-                    .isConcealed(annotation.secret())
-                    .build());
-            }
+            return Optional.empty();
         }
-        return Optional.empty();
+        //TODO validate pattern provided by user!
+        MustMatch annotation = fieldData.field().getAnnotation(MustMatch.class);
+        Pattern pattern = Pattern.compile(annotation.regex());
+        if (pattern.matcher(fieldData.resolvedValue()).matches()) {
+            return Optional.empty();
+        }
+        return Optional.of(StartupValidatorReportMustMatchEntry.builder()
+                .severityLevel(annotation.otherwise().getSeverityLevel())
+                .message(annotation.message())
+                .property(fieldData.propertyName())
+                .regex(annotation.regex())
+                .resolvedValue(fieldData.resolvedValue())
+                .isConcealed(annotation.secret())
+                .build());
     }
 }
