@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.coding-commune</groupId>
   <artifactId>startup-validator-spring-boot-starter</artifactId>
-  <version>1.0.5</version>
+  <version>${revision}</version>
   <name>Spring Boot Startup Validator</name>
   <description>Library allowing to validate an app, its configuration, and runtime environment at startup</description>
   <url>https://github.com/coding-commune/startup-validator-spring-boot-starter</url>
@@ -58,6 +58,7 @@
     <spring.boot.version>3.0.6</spring.boot.version>
     <slf4j-api.version>2.0.7</slf4j-api.version>
     <junit-jupiter-engine.version>5.9.3</junit-jupiter-engine.version>
+    <revision>1.1.0</revision>
   </properties>
 
   <dependencies>
