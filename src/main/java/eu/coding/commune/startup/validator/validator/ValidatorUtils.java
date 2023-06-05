@@ -33,11 +33,11 @@ public class ValidatorUtils {
         Object resolved = null;
         if (isSetUsingValueAnnotation) {
             try {
-                String resolvedPlaceholder = applicationContext.getEnvironment().resolvePlaceholders(property);
+                String resolvedPlaceholder = applicationContext.getEnvironment()
+                        .resolveRequiredPlaceholders(property);
                 if (containsExpression(resolvedPlaceholder)) {
                     Expression exp = PARSER.parseExpression(resolvedPlaceholder
                             .substring(2, resolvedPlaceholder.length() - 1));
-
                     resolved = exp.getValue(type);
                 } else {
                     resolved = resolvedPlaceholder;

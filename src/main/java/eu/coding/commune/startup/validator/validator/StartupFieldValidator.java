@@ -142,36 +142,37 @@ public class StartupFieldValidator {
         }
         Class<?> type = fieldData.field().getType();
         MustNotBeEmpty annotation = fieldData.field().getAnnotation(MustNotBeEmpty.class);
-        if (type.isArray()) {
-            Object[] objects = (Object[]) fieldData.resolvedValue();
-            if (objects.length < 1) {
-                return Optional.of(StartupValidatorReportMustNotBeEmptyEntry.builder()
-                        .severityLevel(annotation.otherwise().getSeverityLevel())
-                        .message(annotation.message())
-                        .property(fieldData.propertyName())
-                        .resolvedValue(fieldData.resolvedValue())
-                        .build());
-            }
-        } else if (Collection.class.isAssignableFrom(type)) {
-            Collection<?> collection;
-            try {
+
+        try {
+            if (type.isArray()) {
+                Object[] objects = (Object[]) fieldData.resolvedValue();
+                if (objects.length < 1) {
+                    return Optional.of(StartupValidatorReportMustNotBeEmptyEntry.builder()
+                            .severityLevel(annotation.otherwise().getSeverityLevel())
+                            .message(annotation.message())
+                            .property(fieldData.propertyName())
+                            .resolvedValue(fieldData.resolvedValue())
+                            .build());
+                }
+            } else if (Collection.class.isAssignableFrom(type)) {
+                Collection<?> collection;
                 collection = (Collection<?>) fieldData.resolvedValue();
-            } catch (ClassCastException e) {
-                return Optional.of(StartupValidatorReportMustNotBeEmptyEntry.builder()
-                        .severityLevel(SeverityLevel.PROBABLE_ERROR)
-                        .message("Could not cast " + fieldData.propertyName() + " to collection")
-                        .property(fieldData.propertyName())
-                        .resolvedValue(fieldData.resolvedValue())
-                        .build());
+                if (collection.isEmpty()) {
+                    return Optional.of(StartupValidatorReportMustNotBeEmptyEntry.builder()
+                            .severityLevel(annotation.otherwise().getSeverityLevel())
+                            .message(annotation.message())
+                            .property(fieldData.propertyName())
+                            .resolvedValue(fieldData.resolvedValue())
+                            .build());
+                }
             }
-            if (collection.isEmpty()) {
-                return Optional.of(StartupValidatorReportMustNotBeEmptyEntry.builder()
-                        .severityLevel(annotation.otherwise().getSeverityLevel())
-                        .message(annotation.message())
-                        .property(fieldData.propertyName())
-                        .resolvedValue(fieldData.resolvedValue())
-                        .build());
-            }
+        } catch (ClassCastException e) {
+            return Optional.of(StartupValidatorReportMustNotBeEmptyEntry.builder()
+                    .severityLevel(SeverityLevel.PROBABLE_ERROR)
+                    .message("Could not cast " + fieldData.propertyName() + " to collection")
+                    .property(fieldData.propertyName())
+                    .resolvedValue(fieldData.resolvedValue())
+                    .build());
         }
         return Optional.empty();
     }

@@ -13,6 +13,8 @@ public class StartupValidatorReportMustNotBeEmptyEntry extends StartupValidatorR
 
     @Override
     public String getGenericMessage() {
-        return "Collection must not be empty";
+        return "Collection defined by property " +
+                property +
+                " cannot be empty. Consider configuring it.";
     }
 }
