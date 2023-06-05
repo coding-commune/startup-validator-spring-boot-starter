@@ -13,11 +13,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static eu.coding.commune.startup.validator.validator.ValidatorUtils.*;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
@@ -43,7 +43,9 @@ public class StartupFieldValidator {
         for (Field field : clazzFields) {
             Optional<String> annotationValue = getValueAnnotationValue(field);
             if (annotationValue.isPresent()) {
-                String resolvedValue = resolveProperty(applicationContext, annotationValue.get(), true);
+                Object resolvedValue = resolveProperty(applicationContext, field.getType(),
+                        annotationValue.get(), true);
+
                 String propertyName = getPropertyName(annotationValue.get());
                 this.performValidation(FieldData.builder()
                     .field(field)
@@ -58,7 +60,9 @@ public class StartupFieldValidator {
     private void validateClassFields(Field[] clazzFields, String propertiesPrefix) {
         for (Field field : clazzFields) {
             String propertyName = propertiesPrefix.concat(".").concat(field.getName());
-            String resolvedValue = resolveProperty(applicationContext, propertyName, false);
+            Object resolvedValue = resolveProperty(applicationContext, field.getType(),
+                    propertyName, false);
+
             this.performValidation(FieldData.builder()
                 .field(field)
                 .propertyName(propertyName)
@@ -71,6 +75,7 @@ public class StartupFieldValidator {
         checkResolvability(fieldData).ifPresent(this.report::addEntry);
         checkMustBeDefined(fieldData).ifPresent(this.report::addEntry);
         checkMustMatch(fieldData).ifPresent(this.report::addEntry);
+        checkMustNotBeEmpty(fieldData).ifPresent(this.report::addEntry);
     }
 
     private Optional<String> getConfigurationPropertiesPrefix(Class<?> clazz) {
@@ -83,7 +88,7 @@ public class StartupFieldValidator {
     }
 
     private Optional<StartupValidatorReportFieldEntry> checkResolvability(FieldData fieldData) {
-        if (isFieldResolvable(fieldData.field(), fieldData.resolvedValue())) {
+        if (isFieldResolvable(fieldData.field(), fieldData.resolvedValue().toString())) {
             return Optional.empty();
         }
         return Optional.of(StartupValidatorReportFieldUnresolvableEntry.builder()
@@ -91,7 +96,7 @@ public class StartupFieldValidator {
                 .message("")
                 .type(fieldData.field().getType().getTypeName())
                 .property(fieldData.propertyName())
-                .resolvedValue(fieldData.resolvedValue())
+                .resolvedValue(fieldData.resolvedValue().toString())
                 .build());
     }
 
@@ -99,7 +104,7 @@ public class StartupFieldValidator {
         if (!fieldData.field().isAnnotationPresent(MustBeDefined.class)) {
             return Optional.empty();
         }
-        if (nonNull(fieldData.resolvedValue()) && !fieldData.resolvedValue().isBlank()) {
+        if (nonNull(fieldData.resolvedValue()) && !fieldData.resolvedValue().toString().isBlank()) {
             return Optional.empty();
         }
         MustBeDefined annotation = fieldData.field().getAnnotation(MustBeDefined.class);
@@ -107,18 +112,18 @@ public class StartupFieldValidator {
                 .severityLevel(annotation.otherwise().getSeverityLevel())
                 .message(annotation.message())
                 .property(fieldData.propertyName())
-                .resolvedValue(fieldData.resolvedValue())
+                .resolvedValue(fieldData.resolvedValue().toString())
                 .build());
     }
 
     private Optional<StartupValidatorReportFieldEntry> checkMustMatch(FieldData fieldData) {
-        if (fieldData.field().isAnnotationPresent(MustMatch.class)) {
+        if (!fieldData.field().isAnnotationPresent(MustMatch.class)) {
             return Optional.empty();
         }
         //TODO validate pattern provided by user!
         MustMatch annotation = fieldData.field().getAnnotation(MustMatch.class);
         Pattern pattern = Pattern.compile(annotation.regex());
-        if (pattern.matcher(fieldData.resolvedValue()).matches()) {
+        if (pattern.matcher(fieldData.resolvedValue().toString()).matches()) {
             return Optional.empty();
         }
         return Optional.of(StartupValidatorReportMustMatchEntry.builder()
@@ -129,5 +134,45 @@ public class StartupFieldValidator {
                 .resolvedValue(fieldData.resolvedValue())
                 .isConcealed(annotation.secret())
                 .build());
+    }
+
+    private Optional<StartupValidatorReportFieldEntry> checkMustNotBeEmpty(FieldData fieldData) {
+        if (!fieldData.field().isAnnotationPresent(MustNotBeEmpty.class)) {
+            return Optional.empty();
+        }
+        Class<?> type = fieldData.field().getType();
+        MustNotBeEmpty annotation = fieldData.field().getAnnotation(MustNotBeEmpty.class);
+        if (type.isArray()) {
+            Object[] objects = (Object[]) fieldData.resolvedValue();
+            if (objects.length < 1) {
+                return Optional.of(StartupValidatorReportMustNotBeEmptyEntry.builder()
+                        .severityLevel(annotation.otherwise().getSeverityLevel())
+                        .message(annotation.message())
+                        .property(fieldData.propertyName())
+                        .resolvedValue(fieldData.resolvedValue())
+                        .build());
+            }
+        } else if (Collection.class.isAssignableFrom(type)) {
+            Collection<?> collection;
+            try {
+                collection = (Collection<?>) fieldData.resolvedValue();
+            } catch (ClassCastException e) {
+                return Optional.of(StartupValidatorReportMustNotBeEmptyEntry.builder()
+                        .severityLevel(SeverityLevel.PROBABLE_ERROR)
+                        .message("Could not cast " + fieldData.propertyName() + " to collection")
+                        .property(fieldData.propertyName())
+                        .resolvedValue(fieldData.resolvedValue())
+                        .build());
+            }
+            if (collection.isEmpty()) {
+                return Optional.of(StartupValidatorReportMustNotBeEmptyEntry.builder()
+                        .severityLevel(annotation.otherwise().getSeverityLevel())
+                        .message(annotation.message())
+                        .property(fieldData.propertyName())
+                        .resolvedValue(fieldData.resolvedValue())
+                        .build());
+            }
+        }
+        return Optional.empty();
     }
 }

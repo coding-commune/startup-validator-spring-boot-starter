@@ -9,11 +9,11 @@ import static java.util.Objects.isNull;
 @Getter
 public abstract class StartupValidatorReportFieldEntry extends StartupValidatorReportEntry {
     protected final String property;
-    protected final String resolvedValue;
+    protected final Object resolvedValue;
     protected final boolean isConcealed;
 
     public StartupValidatorReportFieldEntry(SeverityLevel severityLevel, String message, String property,
-                                            String resolvedValue, boolean isConcealed) {
+                                            Object resolvedValue, boolean isConcealed) {
         super(severityLevel, message);
         this.property = property;
         this.resolvedValue = resolvedValue;

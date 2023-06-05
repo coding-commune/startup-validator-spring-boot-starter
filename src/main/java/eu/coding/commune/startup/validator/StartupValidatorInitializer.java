@@ -30,7 +30,7 @@ public class StartupValidatorInitializer implements ApplicationContextInitialize
 
         public StartupValidatorListener(ConfigurableApplicationContext context) {
             this.context = context;
-            this.appIdentity = this.context.getDisplayName(); //TODO something better?
+            this.appIdentity = this.context.getDisplayName();
             this.startupValidator = new StartupValidator(context);
         }
 

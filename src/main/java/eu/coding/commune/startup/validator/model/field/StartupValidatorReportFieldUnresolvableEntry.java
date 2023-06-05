@@ -18,7 +18,7 @@ public class StartupValidatorReportFieldUnresolvableEntry extends StartupValidat
     @Override
     public String getGenericMessage() {
         return "Value " +
-                getMaskedResolvedValue(this.resolvedValue) + " could not be resolved for property "
+                getMaskedResolvedValue(this.resolvedValue.toString()) + " could not be resolved for property "
                 + this.property + " that requires type " + type;
     }
 }

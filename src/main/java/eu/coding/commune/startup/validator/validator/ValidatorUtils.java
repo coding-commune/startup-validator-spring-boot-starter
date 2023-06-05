@@ -2,15 +2,21 @@ package eu.coding.commune.startup.validator.validator;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 public class ValidatorUtils {
+
+    private final static ExpressionParser PARSER = new SpelExpressionParser();
+    private final static Pattern PATTERN = Pattern.compile(".*?#\\{(.*?)}.*?");
 
     static Optional<String> getValueAnnotationValue(Field field) {
         if (field.isAnnotationPresent(Value.class)) {
@@ -20,36 +26,46 @@ public class ValidatorUtils {
         }
     }
 
-    static Optional<String> getValueAnnotationValue(Method method) {
-        if (method.isAnnotationPresent(Value.class)) {
-            return Optional.of(method.getAnnotation(Value.class).value());
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    static String resolveProperty(ConfigurableApplicationContext applicationContext, String property, boolean isSetUsingValueAnnotation) {
-        String resolved = null;
+    static Object resolveProperty(ConfigurableApplicationContext applicationContext,
+                                  Class<?> type,
+                                  String property,
+                                  boolean isSetUsingValueAnnotation) {
+        Object resolved = null;
         if (isSetUsingValueAnnotation) {
             try {
-                resolved = applicationContext.getEnvironment().resolveRequiredPlaceholders(property);
+                String resolvedPlaceholder = applicationContext.getEnvironment().resolvePlaceholders(property);
+                if (containsExpression(resolvedPlaceholder)) {
+                    Expression exp = PARSER.parseExpression(resolvedPlaceholder
+                            .substring(2, resolvedPlaceholder.length() - 1));
+
+                    resolved = exp.getValue(type);
+                } else {
+                    resolved = resolvedPlaceholder;
+                }
             } catch (IllegalArgumentException ignored) {}
         } else {
-            resolved = applicationContext.getEnvironment().getProperty(property);
+            resolved = applicationContext.getEnvironment().getProperty(property, type);
         }
         return nonNull(resolved) ? resolved : "";
     }
 
+    private static boolean containsExpression(String value) {
+        return PATTERN.matcher(value).matches();
+    }
+
     static String getPropertyName(String placeholder) {
-        if (placeholder.contains(":"))
-            return placeholder.substring(placeholder.indexOf(":") + 1, placeholder.length() - 1);
-        if (placeholder.charAt(0) == '$')
+        if (placeholder.charAt(0) == '$') {
+            if (placeholder.contains(":")) {
+                return placeholder.substring(placeholder.indexOf(":") + 1, placeholder.length() - 1);
+            }
             return placeholder.substring(2, placeholder.length() - 1);
+        }
         return placeholder;
     }
 
     static boolean isFieldResolvable(Field field, String value) {
         Class<?> clazz = field.getType();
+
         try {
             if (clazz.equals(Boolean.TYPE)) {
                 resolveBoolean(value);

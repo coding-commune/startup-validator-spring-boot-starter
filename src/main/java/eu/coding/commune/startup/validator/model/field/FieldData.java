@@ -5,5 +5,8 @@ import lombok.Builder;
 import java.lang.reflect.Field;
 
 @Builder
-public record FieldData(Field field, String propertyName, String resolvedValue) {
-}
+public record FieldData(
+        Field field,
+        String propertyName,
+        Object resolvedValue
+) { }

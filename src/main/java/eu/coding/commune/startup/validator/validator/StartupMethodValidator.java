@@ -75,13 +75,13 @@ public class StartupMethodValidator {
                 if (!isAccessible) {
                     method.trySetAccessible();
                 }
-                String expectedValue = resolveProperty(context, annotation.result(), true);
+                Object expectedValue = resolveProperty(context, String.class, annotation.result(), true);
                 Object methodResult = method.invoke(clazz.cast(bean));
                 if (!methodResult.toString().equals(expectedValue)) {
                     return Optional.of(StartupValidatorReportMethodMustSucceedEntry.builder()
                         .message(annotation.message())
                         .throwable(new Exception("Expected method result: \"" + expectedValue
-                            + "\", actual result: \"" + methodResult.toString() + "\""))
+                            + "\", actual result: \"" + methodResult + "\""))
                         .methodName(method.getName())
                         .className(clazz.getCanonicalName())
                         .severityLevel(annotation.otherwise().getSeverityLevel())

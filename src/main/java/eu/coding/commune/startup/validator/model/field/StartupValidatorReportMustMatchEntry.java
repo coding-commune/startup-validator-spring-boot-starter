@@ -11,7 +11,7 @@ public class StartupValidatorReportMustMatchEntry extends StartupValidatorReport
 
     @Builder
     public StartupValidatorReportMustMatchEntry(SeverityLevel severityLevel, String message, String property,
-                                                String resolvedValue, String regex, boolean isConcealed) {
+                                                Object resolvedValue, String regex, boolean isConcealed) {
         super(severityLevel, message, property, resolvedValue, isConcealed);
         this.regex = regex;
     }
@@ -23,9 +23,9 @@ public class StartupValidatorReportMustMatchEntry extends StartupValidatorReport
         sb.append(regex);
         sb.append(" was not matched for ");
         if (isConcealed) {
-            sb.append(getMaskedResolvedValue(resolvedValue));
+            sb.append(getMaskedResolvedValue(resolvedValue.toString()));
         } else {
-            sb.append(resolvedValue);
+            sb.append(resolvedValue.toString());
         }
         sb.append(" provided for property ");
         sb.append(property);
