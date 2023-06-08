@@ -4,7 +4,7 @@ import eu.coding.commune.startup.validator.logger.StartupValidatorReportDefaultL
 import eu.coding.commune.startup.validator.logger.StartupValidatorReportLogger;
 import eu.coding.commune.startup.validator.model.SeverityLevel;
 import eu.coding.commune.startup.validator.model.StartupValidatorReport;
-import eu.coding.commune.startup.validator.validator.StartupValidator;
+import eu.coding.commune.startup.validator.impl.StartupValidator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,6 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.SmartApplicationListener;
-import org.springframework.core.Ordered;
 
 public class StartupValidatorInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
@@ -89,11 +88,6 @@ public class StartupValidatorInitializer implements ApplicationContextInitialize
         @Override
         public boolean supportsSourceType(Class<?> sourceType) {
             return true;
-        }
-
-        @Override
-        public int getOrder() {
-            return Ordered.LOWEST_PRECEDENCE;
         }
 
         @Override

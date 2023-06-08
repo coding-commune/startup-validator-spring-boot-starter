@@ -1,4 +1,4 @@
-package eu.coding.commune.startup.validator.validator;
+package eu.coding.commune.startup.validator.impl;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ConfigurableApplicationContext;

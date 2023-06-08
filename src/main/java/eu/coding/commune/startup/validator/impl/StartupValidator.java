@@ -1,4 +1,4 @@
-package eu.coding.commune.startup.validator.validator;
+package eu.coding.commune.startup.validator.impl;
 
 import eu.coding.commune.startup.validator.PackageProvider;
 import eu.coding.commune.startup.validator.model.StartupValidatorReport;

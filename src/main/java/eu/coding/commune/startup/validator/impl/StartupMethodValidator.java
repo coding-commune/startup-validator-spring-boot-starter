@@ -1,4 +1,4 @@
-package eu.coding.commune.startup.validator.validator;
+package eu.coding.commune.startup.validator.impl;
 
 import eu.coding.commune.startup.validator.MustReturn;
 import eu.coding.commune.startup.validator.MustSucceed;
@@ -13,7 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-import static eu.coding.commune.startup.validator.validator.ValidatorUtils.resolveProperty;
+import static eu.coding.commune.startup.validator.impl.ValidatorUtils.resolveProperty;
 
 @RequiredArgsConstructor
 public class StartupMethodValidator {

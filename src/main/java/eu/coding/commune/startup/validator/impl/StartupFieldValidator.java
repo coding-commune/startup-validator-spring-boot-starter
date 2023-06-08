@@ -1,4 +1,4 @@
-package eu.coding.commune.startup.validator.validator;
+package eu.coding.commune.startup.validator.impl;
 
 import eu.coding.commune.startup.validator.MustBeDefined;
 import eu.coding.commune.startup.validator.MustMatch;
@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import static eu.coding.commune.startup.validator.validator.ValidatorUtils.*;
+import static eu.coding.commune.startup.validator.impl.ValidatorUtils.*;
 import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
