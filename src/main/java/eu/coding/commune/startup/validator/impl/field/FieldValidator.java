@@ -1,5 +1,6 @@
-package eu.coding.commune.startup.validator.impl;
+package eu.coding.commune.startup.validator.impl.field;
 
+import eu.coding.commune.startup.validator.impl.Validator;
 import eu.coding.commune.startup.validator.model.field.FieldData;
 import eu.coding.commune.startup.validator.model.field.StartupValidatorReportFieldEntry;
 
@@ -18,4 +19,5 @@ public abstract class FieldValidator implements Validator {
         return validateInternal(fieldData);
     }
     protected abstract Optional<? extends StartupValidatorReportFieldEntry> validateInternal(FieldData fieldData);
+
 }

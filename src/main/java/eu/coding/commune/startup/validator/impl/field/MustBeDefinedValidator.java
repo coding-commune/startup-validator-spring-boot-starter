@@ -1,4 +1,4 @@
-package eu.coding.commune.startup.validator.impl;
+package eu.coding.commune.startup.validator.impl.field;
 
 import eu.coding.commune.startup.validator.MustBeDefined;
 import eu.coding.commune.startup.validator.model.field.FieldData;

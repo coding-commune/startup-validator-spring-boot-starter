@@ -1,0 +1,3 @@
+eu.coding.commune.startup.validator.impl.field.MustBeDefinedValidator
+eu.coding.commune.startup.validator.impl.field.MustMatchValidator
+eu.coding.commune.startup.validator.impl.field.MustNotBeEmptyValidator

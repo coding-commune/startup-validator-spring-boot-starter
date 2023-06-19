@@ -1,7 +1,7 @@
 package eu.coding.commune.startup.validator.impl;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.ApplicationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -26,10 +26,10 @@ public class ValidatorUtils {
         }
     }
 
-    static Object resolveProperty(ConfigurableApplicationContext applicationContext,
-                                  Class<?> type,
-                                  String property,
-                                  boolean isSetUsingValueAnnotation) {
+    public static Object resolveProperty(ApplicationContext applicationContext,
+                                         Class<?> type,
+                                         String property,
+                                         boolean isSetUsingValueAnnotation) {
         Object resolved = null;
         if (isSetUsingValueAnnotation) {
             try {

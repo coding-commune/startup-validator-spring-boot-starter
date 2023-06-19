@@ -1,7 +1,6 @@
 package eu.coding.commune.startup.validator.impl;
 
 import eu.coding.commune.startup.validator.MustReturn;
-import eu.coding.commune.startup.validator.MustSucceed;
 import eu.coding.commune.startup.validator.model.StartupValidatorReport;
 import eu.coding.commune.startup.validator.model.StartupValidatorReportEntry;
 import eu.coding.commune.startup.validator.model.method.StartupValidatorReportMethodMustSucceedEntry;
@@ -26,12 +25,13 @@ public class StartupMethodValidator {
         Object bean = getBean(clazz);
         Method[] clazzMethods = clazz.getDeclaredMethods();
         for (Method method : clazzMethods) {
-            if (method.isAnnotationPresent(MustSucceed.class)) {
-                checkMustSucceed(bean, clazz, method).ifPresent(this.report::addEntry);
-            }
-            if (method.isAnnotationPresent(MustReturn.class)) {
-                checkMustReturn(bean, clazz, method).ifPresent(this.report::addEntry);
-            }
+            //TODO - nie na sztywno
+//            if (method.isAnnotationPresent(MustSucceed.class)) {
+//                checkMustSucceed(bean, clazz, method).ifPresent(this.report::addEntry);
+//            }
+//            if (method.isAnnotationPresent(MustReturn.class)) {
+//                checkMustReturn(bean, clazz, method).ifPresent(this.report::addEntry);
+//            }
         }
     }
 
@@ -40,31 +40,6 @@ public class StartupMethodValidator {
         return context.getBean(clazz);
     }
 
-    //TODO - This that not seem bulletproof. What does method.setAccessible(false) do for others?
-    private Optional<StartupValidatorReportEntry> checkMustSucceed(Object bean, Class<?> clazz, Method method) {
-        MustSucceed annotation = method.getAnnotation(MustSucceed.class);
-        boolean isAccessible = method.canAccess(clazz.cast(bean));
-        try {
-            if (!isAccessible) {
-                method.trySetAccessible();
-            }
-            method.invoke(clazz.cast(bean));
-        } catch (IllegalAccessException e) {
-            //TODO handling
-            logger.error("An error occurred during checking", e);
-        } catch (InvocationTargetException e) {
-            return Optional.of(StartupValidatorReportMethodMustSucceedEntry.builder()
-                .message(annotation.message())
-                .throwable(e.getTargetException())
-                .methodName(method.getName())
-                .className(clazz.getCanonicalName())
-                .severityLevel(annotation.otherwise().getSeverityLevel())
-                .build());
-        } finally {
-            method.setAccessible(isAccessible);
-        }
-        return Optional.empty();
-    }
 
     //TODO implement check of primitives
     private Optional<StartupValidatorReportEntry> checkMustReturn(Object bean, Class<?> clazz, Method method) {
