@@ -69,8 +69,10 @@ public class StartupFieldValidator {
 
     private void performValidation(FieldData fieldData) {
         checkResolvability(fieldData).ifPresent(this.report::addEntry);
-        ServiceLoader.load(FieldValidator.class).forEach(validator ->
-                validator.validate(fieldData).ifPresent(this.report::addEntry));
+        ServiceLoader.load(FieldValidator.class).forEach(validator -> {
+            validator.setApplicationContext(applicationContext);
+            validator.validate(fieldData).ifPresent(this.report::addEntry);
+        });
     }
 
     private Optional<String> getConfigurationPropertiesPrefix(Class<?> clazz) {

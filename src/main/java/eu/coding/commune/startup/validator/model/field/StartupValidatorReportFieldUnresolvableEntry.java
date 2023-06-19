@@ -3,7 +3,6 @@ package eu.coding.commune.startup.validator.model.field;
 import eu.coding.commune.startup.validator.model.SeverityLevel;
 import lombok.Builder;
 
-//TODO possibility to implement it by user
 public class StartupValidatorReportFieldUnresolvableEntry extends StartupValidatorReportFieldEntry {
 
     private final String type;

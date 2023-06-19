@@ -9,4 +9,4 @@ public record FieldData(
         Field field,
         String propertyName,
         Object resolvedValue
-) { }
+) {}

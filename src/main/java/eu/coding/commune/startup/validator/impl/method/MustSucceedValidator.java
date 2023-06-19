@@ -3,10 +3,9 @@ package eu.coding.commune.startup.validator.impl.method;
 import eu.coding.commune.startup.validator.MustSucceed;
 import eu.coding.commune.startup.validator.model.method.MethodData;
 import eu.coding.commune.startup.validator.model.method.StartupValidatorReportMethodEntry;
-import eu.coding.commune.startup.validator.model.method.StartupValidatorReportMethodMustSucceedEntry;
+import eu.coding.commune.startup.validator.model.method.StartupValidatorReportMustSucceedEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -14,11 +13,7 @@ import java.util.Optional;
 
 public class MustSucceedValidator extends MethodValidator {
 
-    private final static Logger logger = LoggerFactory.getLogger(MustSucceedValidator.class);
-
-    public MustSucceedValidator(ApplicationContext context) {
-        super(context);
-    }
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public Class<? extends Annotation> getSupportedAnnotation() {
@@ -39,7 +34,7 @@ public class MustSucceedValidator extends MethodValidator {
             //TODO handling
             logger.error("An error occurred during checking", e);
         } catch (InvocationTargetException e) {
-            return Optional.of(StartupValidatorReportMethodMustSucceedEntry.builder()
+            return Optional.of(StartupValidatorReportMustSucceedEntry.builder()
                     .message(annotation.message())
                     .throwable(e.getTargetException())
                     .methodName(methodData.method().getName())

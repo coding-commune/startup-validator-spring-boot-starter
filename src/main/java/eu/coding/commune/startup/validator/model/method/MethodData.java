@@ -5,5 +5,8 @@ import lombok.Builder;
 import java.lang.reflect.Method;
 
 @Builder
-public record MethodData(Object bean, Class<?> clazz, Method method) {
-}
+public record MethodData(
+        Object bean,
+        Class<?> clazz,
+        Method method
+) {}

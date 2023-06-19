@@ -6,7 +6,7 @@ import eu.coding.commune.startup.validator.model.field.StartupValidatorReportFie
 
 import java.util.Optional;
 
-public abstract class FieldValidator implements Validator {
+public abstract class FieldValidator extends Validator {
 
     public boolean isNotApplicable(FieldData fieldData) {
         return !fieldData.field().isAnnotationPresent(getSupportedAnnotation());

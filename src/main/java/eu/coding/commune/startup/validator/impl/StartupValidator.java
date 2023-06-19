@@ -43,12 +43,6 @@ public class StartupValidator {
         this.validate(false);
     }
 
-    public void validateMethods() {
-        logger.atDebug().log("Starting method validation...");
-
-        logger.atDebug().log("Method validation ended successfully!");
-    }
-
     private void validate(boolean validateMethods) {
         Set<BeanDefinition> beanDefinitions = getBeanDefinitionsToValidate();
         for (BeanDefinition beanDefinition : beanDefinitions) {
